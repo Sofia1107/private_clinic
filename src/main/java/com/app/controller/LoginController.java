@@ -9,7 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -29,6 +30,7 @@ public class LoginController {
     public String login() {
         return LOGIN_VIEW;
     }
+
     @PostMapping("/login")
     public String login(HttpServletRequest request, Model model) throws Exception {
         Person person = Person.builder()
@@ -36,19 +38,19 @@ public class LoginController {
                 .setPassword(request.getParameter("password"))
                 .build();
         ResponseEntity responseEntity = userService.authorizeUser(person);
-        if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED){
+        if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
             model.addAttribute("error", AppConstants.INCORRECT_PWD_ERROR);
             model.addAttribute("email", person.getEmail());
-        } else if (responseEntity.getStatusCode() == HttpStatus.NO_CONTENT){
+        } else if (responseEntity.getStatusCode() == HttpStatus.NO_CONTENT) {
             model.addAttribute("error", AppConstants.USER_WITH_EMAIL_DOES_NOT_EXIST);
             model.addAttribute("email", person.getEmail());
         } else {
             Person user = (Person) responseEntity.getBody();
             request.getSession().setAttribute("userRole", user.getUserRole());
             request.getSession().setAttribute("userId", user.getId());
-            if (user.getUserRole().equals(AppConstants.USER_ROLE_ADMIN)){
+            if (user.getUserRole().equals(AppConstants.USER_ROLE_ADMIN)) {
                 return REDIRECT_ADMIN;
-            } else if (user.getUserRole().equals(AppConstants.USER_ROLE_CLIENT)){
+            } else if (user.getUserRole().equals(AppConstants.USER_ROLE_CLIENT)) {
                 return REDIRECT_CLIENT;
             }
         }
@@ -56,7 +58,7 @@ public class LoginController {
     }
 
     @GetMapping("/logout")
-    public String logout(HttpServletRequest httpServletRequest){
+    public String logout(HttpServletRequest httpServletRequest) {
         httpServletRequest.getSession().invalidate();
         return REDIRECT_LOGIN;
     }

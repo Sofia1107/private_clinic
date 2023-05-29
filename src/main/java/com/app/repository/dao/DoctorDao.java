@@ -1,7 +1,6 @@
 package com.app.repository.dao;
 
 import com.app.entity.Doctor;
-import com.app.entity.Person;
 import com.app.repository.DatabaseAccess;
 import org.springframework.stereotype.Repository;
 
@@ -91,7 +90,7 @@ public class DoctorDao extends DatabaseAccess {
     public Doctor getDoctorByEmail(String email) {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement ps = connection.prepareStatement(SELECT_DOCTOR_BY_EMAIL_SQL)) {
-            ps.setString(1,email);
+            ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Doctor doctor = Doctor.builder()

@@ -2,7 +2,10 @@ package com.app.entity;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.sql.Date;
 
@@ -67,8 +70,8 @@ public class Person {
         private String allergy;
 
 
-        public Person build(){
-            return new Person(id,firstName,lastName,phoneNumber,password,email,dateOfBirth,bloodGroup,RH,allergy,userRole);
+        public Person build() {
+            return new Person(id, firstName, lastName, phoneNumber, password, email, dateOfBirth, bloodGroup, RH, allergy, userRole);
         }
 
         public PersonBuilder setId(Integer id) {

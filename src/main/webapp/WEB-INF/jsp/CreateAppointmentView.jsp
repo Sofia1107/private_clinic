@@ -32,19 +32,23 @@
     <form method="POST" action="${contextPath}/client/appointment/create" class="form-custom">
         <h2 class="form-heading" style="text-align: center;">Запис на прийом</h2>
         <div class="form-group">
-            <select id ="doctor" name="doctorId" class="form-control">
+            <select id="doctor" name="doctorId" class="form-control">
                 <c:forEach var="doctor" items="${doctors}">
-                    <OPTION value="${doctor.id}">${doctor.lastName} ${doctor.firstName} - ${doctor.specialization}</OPTION>
+                    <OPTION value="${doctor.id}">${doctor.lastName} ${doctor.firstName}
+                        - ${doctor.specialization}</OPTION>
                 </c:forEach>
             </select>
             <input name="dateTime" type="datetime-local" class="form-control">
             <br>
             <textarea name="summary" type="text" class="form-control" placeholder="Опис скарги"></textarea>
+            <h4 class="custom-link"><a href="${contextPath}/client/appointments">Існуючі записи</a></h4>
             <c:if test="${not empty error}">
-                <p style="color: red"><%= request.getAttribute("error") %></p>
+                <p style="color: red"><%= request.getAttribute("error") %>
+                </p>
             </c:if>
             <c:if test="${not empty success}">
-                <p style="color: red"><%= request.getAttribute("success") %></p>
+                <p style="color: limegreen"><%= request.getAttribute("success") %>
+                </p>
             </c:if>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Створити</button>
             <h4 class="text-center"><a href="${contextPath}/logout">Вихід</a></h4>

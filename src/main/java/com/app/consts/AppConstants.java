@@ -15,5 +15,8 @@ public interface AppConstants {
     String SUCCESS_REGISTRATION = "Реєстрація пройшла успішно!";
     String SUCCESS_APPOINTMENT_CREATION = "Запис створено успішно!";
     String TECHNICAL_ERROR = "Технічна помилка. Будь ласка спробуйте пізніше.";
-    String ID = "id";
+    String SUCCESS_UPDATING = "Інформацію користувача оновлено успішно!";
+    String DOCTOR_EMAIL_ALREADY_EXIST = "Лікар з даною електронною поштою вже існує";
+    String DOCTOR_PHONE_NUMBER_ALREADY_EXIST = "Лікар з даним номером телефону вже існує";
+    String DOCTOR_SUCCESS_UPDATING = "Інформацію про лікаря оновлено успішно!";
 }

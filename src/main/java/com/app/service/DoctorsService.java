@@ -1,8 +1,8 @@
 package com.app.service;
 
+import com.app.consts.AppConstants;
 import com.app.entity.Doctor;
-import com.app.exceptions.model.Error;
-import com.app.exceptions.model.ErrorMessage;
+import com.app.repository.dao.AppointmentDao;
 import com.app.repository.dao.DoctorDao;
 import com.app.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +12,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DoctorsService {
     @Autowired
     DoctorDao doctorDao;
+
+    @Autowired
+    private AppointmentDao appointmentDao;
 
     @Transactional
     public ResponseEntity saveDoctor(Doctor doctor) {
@@ -25,64 +29,45 @@ public class DoctorsService {
         if (isMobileNumberValid && isEmailValid) {
             if (isDoctorExistsByEmail(doctor.getEmail())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.DUPLICATE_EMAIL.getError())
-                                .message(Error.DUPLICATE_EMAIL.getMessage())
-                                .build());
+                        .body(AppConstants.DOCTOR_EMAIL_ALREADY_EXIST);
             } else if (isDoctorExistsByPhoneNumber(doctor.getPhoneNumber())) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.DUPLICATE_PHONE_NUMBER.getError())
-                                .message(Error.DUPLICATE_PHONE_NUMBER.getMessage())
-                                .build());
+                        .body(AppConstants.DOCTOR_PHONE_NUMBER_ALREADY_EXIST);
             }
             int result = doctorDao.saveDoctor(doctor);
             return result <= 0 ? ResponseEntity.status(HttpStatus.CONFLICT).build() : ResponseEntity.status(HttpStatus.CREATED).build();
         } else {
             if (!isEmailValid) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.EMAIL_NOT_MATCH_REQUIREMENTS.getError())
-                                .build());
+                        .body(AppConstants.EMAIL_DOES_NOT_MATCH_PATTERN);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.PHONE_NUMBER_NOT_MATCH_REQUIREMENTS.getError())
-                                .build());
+                        .body(AppConstants.PHONE_NUMBER_DOES_NOT_MATCH_PATTERN);
             }
         }
     }
 
+    @Transactional
     public ResponseEntity updateDoctor(Doctor doctor) {
         boolean isEmailValid = ValidationUtil.validateEmail(doctor.getEmail());
         boolean isMobileNumberValid = ValidationUtil.validatePhoneNumber(doctor.getPhoneNumber());
         if (isMobileNumberValid && isEmailValid) {
-            if (isDoctorExistsByEmail(doctor.getEmail())) {
+            if (!isDoctorNewEmailUnique(doctor)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.DUPLICATE_EMAIL.getError())
-                                .message(Error.DUPLICATE_EMAIL.getMessage())
-                                .build());
-            } else if (isDoctorExistsByPhoneNumber(doctor.getPhoneNumber())) {
+                        .body(AppConstants.DOCTOR_EMAIL_ALREADY_EXIST);
+            } else if (!isDoctorNewPhoneUnique(doctor)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.DUPLICATE_PHONE_NUMBER.getError())
-                                .message(Error.DUPLICATE_PHONE_NUMBER.getMessage())
-                                .build());
+                        .body(AppConstants.DOCTOR_PHONE_NUMBER_ALREADY_EXIST);
             }
             int result = doctorDao.updateDoctor(doctor);
             return result <= 0 ? ResponseEntity.status(HttpStatus.CONFLICT).build() : ResponseEntity.status(HttpStatus.OK).build();
         } else {
             if (!isEmailValid) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.EMAIL_NOT_MATCH_REQUIREMENTS.getError())
-                                .build());
+                        .body(AppConstants.EMAIL_DOES_NOT_MATCH_PATTERN);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.PHONE_NUMBER_NOT_MATCH_REQUIREMENTS.getError())
-                                .build());
+                        .body(AppConstants.PHONE_NUMBER_DOES_NOT_MATCH_PATTERN);
             }
         }
     }
@@ -91,8 +76,9 @@ public class DoctorsService {
         return doctorDao.getDoctors();
     }
 
-    public ResponseEntity deleteDoctorById(Doctor doctor) {
-        int result = doctorDao.deleteDoctorById(doctor.getId());
+    public ResponseEntity deleteDoctorById(Integer id) {
+        int resultAppointment = appointmentDao.deleteAppointmentByDoctorId(id);
+        int result = doctorDao.deleteDoctorById(id);
         return result <= 0 ? ResponseEntity.status(HttpStatus.CONFLICT).build() : ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -104,5 +90,15 @@ public class DoctorsService {
     private boolean isDoctorExistsByPhoneNumber(String phoneNumber) {
         Doctor doctor = doctorDao.getDoctorByPhoneNumber(phoneNumber);
         return doctor != null;
+    }
+
+    private boolean isDoctorNewEmailUnique(Doctor doctor) {
+        Doctor existingDoctor = doctorDao.getDoctorByEmail(doctor.getEmail());
+        return existingDoctor == null || Objects.equals(existingDoctor.getId(), doctor.getId());
+    }
+
+    private boolean isDoctorNewPhoneUnique(Doctor doctor) {
+        Doctor existingDoctor = doctorDao.getDoctorByPhoneNumber(doctor.getPhoneNumber());
+        return existingDoctor == null || Objects.equals(existingDoctor.getId(), doctor.getId());
     }
 }

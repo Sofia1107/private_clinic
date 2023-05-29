@@ -4,14 +4,11 @@ import com.app.entity.Appointment;
 import com.app.repository.DatabaseAccess;
 import org.springframework.stereotype.Repository;
 
-import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 @Repository
@@ -28,12 +25,13 @@ public class AppointmentDao extends DatabaseAccess {
             "INNER JOIN doctors docs on docs.id = ap.doctor_id " +
             "WHERE client_id = ? " +
             "ORDER BY date_time";
-    private static final String SELECT_APPOINTMENTS_BY_DOCTOR_ID_SQL = "SELECT ap.id, ap.client_id, ap.doctor_id, ap.date_time, ap.summary, usr.first_name, usr.last_name, docs.first_name, docs.last_name " +
+
+    private static final String SELECT_APPOINTMENTS_SQL = "SELECT ap.id, ap.client_id, ap.doctor_id, ap.date_time, ap.summary, usr.first_name, usr.last_name, docs.first_name, docs.last_name " +
             "FROM appointments ap " +
             "INNER JOIN users usr on usr.id = ap.client_id " +
             "INNER JOIN doctors docs on docs.id = ap.doctor_id " +
-            "WHERE doctor_id = ? " +
-            "ORDER BY date_time";
+            "WHERE usr.user_role = 'client' " +
+            "ORDER BY usr.last_name";
 
     public int saveAppointment(Appointment appointment) {
         try (Connection connection = dataSource.getConnection();
@@ -127,11 +125,10 @@ public class AppointmentDao extends DatabaseAccess {
         return appointments;
     }
 
-    public List<Appointment> getAppointmentsByDoctorId(int id) {
+    public List<Appointment> getAppointments() {
         List<Appointment> appointments = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement ps = connection.prepareStatement(SELECT_APPOINTMENTS_BY_DOCTOR_ID_SQL)) {
-            ps.setInt(1, id);
+             PreparedStatement ps = connection.prepareStatement(SELECT_APPOINTMENTS_SQL)) {
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Appointment appointment = Appointment.builder()

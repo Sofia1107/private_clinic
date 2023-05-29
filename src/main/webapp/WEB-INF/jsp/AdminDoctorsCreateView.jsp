@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-    <title>Реєстрація</title>
+    <title>Реєстрація лікаря</title>
 
     <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
@@ -29,8 +29,8 @@
 
 <div class="container">
 
-    <form method="POST" action="${contextPath}/registration" class="form-custom">
-        <h2 class="form-heading" style="text-align: center;">Реєстрація</h2>
+    <form method="POST" action="${contextPath}/admin/doctors/create" class="form-custom">
+        <h2 class="form-heading" style="text-align: center;">Реєстрація лікаря</h2>
         <div class="form-group">
             <input name="firstName" type="text" class="form-control" placeholder="Ім'я"
                    value="${firstName}"/>
@@ -40,25 +40,9 @@
                    value="${email}"/>
             <input name="phoneNumber" type="text" class="form-control" placeholder="Номер телефону"
                    value="${phoneNumber}"/>
-            <input name="birthDate" type="text" onfocus="(this.type='date')" class="form-control"
-                   placeholder="Дата народження"
-                   value="${birthdate}"/>
-            <select name="bloodGroup" class="form-control">
-                <option value="" disabled selected hidden style="color: #999;">Група крові</option>
-                <option value="1" ${bloodGroup == 1 ? 'selected' : ''}>1</option>
-                <option value="2" ${bloodGroup == 2 ? 'selected' : ''}>2</option>
-                <option value="3" ${bloodGroup == 3 ? 'selected' : ''}>3</option>
-                <option value="4" ${bloodGroup == 4 ? 'selected' : ''}>4</option>
-            </select>
-            <select name="rh" class="form-control">
-                <option value="" disabled selected hidden style="color: #999;">Резус фактор</option>
-                <option value="+" ${rh == '+' ? 'selected' : ''}>+</option>
-                <option value="-" ${rh == '-' ? 'selected' : ''}>-</option>
-            </select>
-            <input name="allergy" type="text" class="form-control" placeholder="Алергія"
-                   value="${allergy}"/>
-            <input name="password" type="password" class="form-control" placeholder="Пароль"/>
-            <input name="passwordRepeated" type="password" class="form-control" placeholder="Повторіть пароль"/>
+            <input name="specialization" type="text" class="form-control" placeholder="Спеціальність"
+                   value="${specialization}"/>
+            <h4 class="custom-link"><a href="${contextPath}/admin/doctors">Список лікарів</a></h4>
             <c:if test="${not empty error}">
                 <p style="color: red"><%= request.getAttribute("error") %>
                 </p>
@@ -67,8 +51,8 @@
                 <p style="color: limegreen"><%= request.getAttribute("success") %>
                 </p>
             </c:if>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Зареєструватись</button>
-            <h4 class="text-center"><a href="${contextPath}/login">Вхід</a></h4>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Створити</button>
+            <h4 class="text-center"><a href="${contextPath}/logout">Вихід</a></h4>
         </div>
     </form>
 

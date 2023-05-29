@@ -8,14 +8,15 @@ import java.util.Optional;
 
 @Getter
 @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-public class ApplicationGlobalException extends RuntimeException{
-    public ApplicationGlobalException(){}
+public class ApplicationGlobalException extends RuntimeException {
+    public ApplicationGlobalException() {
+    }
 
-    public ApplicationGlobalException(String message){
+    public ApplicationGlobalException(String message) {
         super(message);
     }
 
-    public ApplicationGlobalException(String message, Throwable cause){
+    public ApplicationGlobalException(String message, Throwable cause) {
         super(message, cause);
     }
 

@@ -17,12 +17,13 @@ public class ValidationUtil {
         String pattern = "(?=.*[A-Z])(?=.*\\d)(?=.*[@#$%^&+=!])(?=.*[a-z]).{8,}";
         return pass.matches(pattern);
     }
-    public static boolean validateEmail(String email){
+
+    public static boolean validateEmail(String email) {
         String pattern = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
         return email.matches(pattern);
     }
 
-    public static boolean validatePhoneNumber(String phoneNumber){
+    public static boolean validatePhoneNumber(String phoneNumber) {
         String pattern = "^\\+?3?8?(0\\d{9})$";
         return phoneNumber.matches(pattern);
     }

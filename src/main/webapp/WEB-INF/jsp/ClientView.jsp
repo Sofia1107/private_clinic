@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
 
-    <title>Реєстрація</title>
+    <title>Сторінка клієнта</title>
 
     <link href="${contextPath}/resources/css/bootstrap.min.css" rel="stylesheet">
     <link href="${contextPath}/resources/css/common.css" rel="stylesheet">
@@ -35,11 +35,20 @@
             <button class="btn btn-lg btn-primary btn-block" type="submit">Запис до лікаря</button>
         </div>
     </form>
-    <form method="POST" action="${contextPath}/client/appointments" class="form-custom">
+    <form id="appointments-form" class="form-custom">
         <div class="form-group">
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Наявні записи</button>
+            <button id="appointments-button" class="btn btn-lg btn-primary btn-block" type="button">Наявні записи
+            </button>
         </div>
     </form>
+    <script>
+        document.getElementById("appointments-button").addEventListener("click", function () {
+            var form = document.getElementById("appointments-form");
+            form.method = "GET";
+            form.action = "${contextPath}/client/appointments";
+            form.submit();
+        });
+    </script>
     <h4 class="text-center"><a href="${contextPath}/logout">Вихід</a></h4>
 
 </div>

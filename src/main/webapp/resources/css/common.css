@@ -4,6 +4,12 @@ body {
     background-color: #eee;
 }
 
+.container {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+}
+
 .form-custom {
     max-width: 330px;
     padding: 15px;
@@ -39,10 +45,95 @@ body {
     border-bottom-left-radius: 0;
 }
 
+.form-custom select {
+    margin-top: 10px;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
 .form-custom button {
     margin-top: 10px;
 }
 
 .has-error {
     color: red
+}
+
+.table-container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    border: 2px solid #ddd; /* Додано рамку для таблиці */
+}
+
+.table-custom {
+    max-width: 100%;
+    padding: 15px;
+    margin: 0 auto;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 2px solid #ddd;
+    border-right: 2px solid #ddd; /* Додано праву рамку для комірок */
+    background-color: #bce8f1;
+}
+
+th {
+    background-color: #46b8da;
+    font-weight: bold;
+}
+
+td:last-child {
+    text-align: center;
+    border-right: none; /* Вилучено праву рамку для останньої комірки */
+}
+
+button.delete-btn {
+    display: block;
+    margin-bottom: 5px;
+    background-color: #ff0000;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button.update-btn {
+    display: block;
+    margin-bottom: 5px;
+    background-color: #0360ff;
+    color: #fff;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.form-heading-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.form-heading {
+    margin: 0;
+}
+
+.custom-link {
+    margin: 0;
+}
+
+.button-container {
+    display: block;
+    justify-content: space-between;
 }

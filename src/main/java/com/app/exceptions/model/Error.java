@@ -21,10 +21,12 @@ public enum Error {
     public String getError() {
         return error;
     }
+
     public String getMessage() {
         return message;
     }
-    public Map.Entry<String,String> getBoth() {
+
+    public Map.Entry<String, String> getBoth() {
         return new AbstractMap.SimpleEntry<>(error, message);
     }
 }

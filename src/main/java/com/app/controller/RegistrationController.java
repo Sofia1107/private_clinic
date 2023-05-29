@@ -33,6 +33,7 @@ public class RegistrationController {
 
         return model;
     }
+
     @PostMapping(value = "")
     public String registration(HttpServletRequest request, Model model) throws Exception {
         Person person = Person.builder()
@@ -48,24 +49,24 @@ public class RegistrationController {
                 .setUserRole(AppConstants.USER_ROLE_CLIENT)
                 .build();
         ResponseEntity responseEntity;
-        if (person.getPassword().equals(request.getParameter("passwordRepeated"))){
+        if (person.getPassword().equals(request.getParameter("passwordRepeated"))) {
             responseEntity = userService.registerClient(person);
-            if (responseEntity.getStatusCode() == HttpStatus.CREATED){
+            if (responseEntity.getStatusCode() == HttpStatus.CREATED) {
                 model.addAttribute("success", AppConstants.SUCCESS_REGISTRATION);
-                populateModel(model,person);
+                populateModel(model, person);
 
-            } else if (responseEntity.getStatusCode() == HttpStatus.BAD_REQUEST){
+            } else if (responseEntity.getStatusCode() == HttpStatus.BAD_REQUEST) {
                 model.addAttribute("error", responseEntity.getBody());
-                populateModel(model,person);
+                populateModel(model, person);
             }
         } else {
             model.addAttribute("error", AppConstants.PASSWORDS_NOT_EQUAL);
-            populateModel(model,person);
+            populateModel(model, person);
         }
         return REGISTRATION_VIEW;
     }
 
-    public void populateModel(Model model, Person person){
+    public void populateModel(Model model, Person person) {
         model.addAttribute("firstName", person.getFirstName());
         model.addAttribute("lastName", person.getLastName());
         model.addAttribute("email", person.getEmail());

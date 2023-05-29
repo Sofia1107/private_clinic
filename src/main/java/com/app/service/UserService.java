@@ -1,9 +1,7 @@
 package com.app.service;
 
 import com.app.consts.AppConstants;
-import com.app.entity.*;
-import com.app.exceptions.model.Error;
-import com.app.exceptions.model.ErrorMessage;
+import com.app.entity.Person;
 import com.app.repository.dao.AppointmentDao;
 import com.app.repository.dao.UserDao;
 import com.app.util.PasswordUtil;
@@ -13,6 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserService {
@@ -53,43 +54,26 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity updateClient(Person client) throws Exception {
+    public ResponseEntity updateClient(Person client) {
         boolean isEmailValid = ValidationUtil.validateEmail(client.getEmail());
-        boolean isPwdValid = ValidationUtil.validatePassword(client.getPassword());
         boolean isMobileNumberValid = ValidationUtil.validatePhoneNumber(client.getPhoneNumber());
-        if (isPwdValid && isEmailValid && isMobileNumberValid) {
-            if (isClientExistsWithEmail(client.getEmail())) {
+        if (isEmailValid && isMobileNumberValid) {
+            if (!isClientNewEmailUnique(client)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.DUPLICATE_EMAIL.getError())
-                                .message(Error.DUPLICATE_EMAIL.getMessage())
-                                .build());
-            } else if (isClientExistsWithPhone(client.getPhoneNumber())) {
+                        .body(AppConstants.EMAIL_ALREADY_EXIST);
+            } else if (!isClientNewPhoneUnique(client)) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.DUPLICATE_PHONE_NUMBER.getError())
-                                .message(Error.DUPLICATE_PHONE_NUMBER.getMessage())
-                                .build());
+                        .body(AppConstants.PHONE_NUMBER_ALREADY_EXIST);
             }
-            encryptPassword(client);
             int result = userDao.updateClient(client);
             return result <= 0 ? ResponseEntity.status(HttpStatus.CONFLICT).build() : ResponseEntity.status(HttpStatus.OK).build();
         } else {
-            if (!isEmailValid)
+            if (!isEmailValid) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.EMAIL_NOT_MATCH_REQUIREMENTS.getError())
-                                .build());
-            else if (!isPwdValid) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.PASSWORD_NOT_MATCH_REQUIREMENTS.getError())
-                                .build());
+                        .body(AppConstants.EMAIL_DOES_NOT_MATCH_PATTERN);
             } else {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(ErrorMessage.builder()
-                                .error(Error.PHONE_NUMBER_NOT_MATCH_REQUIREMENTS.getError())
-                                .build());
+                        .body(AppConstants.PHONE_NUMBER_DOES_NOT_MATCH_PATTERN);
             }
         }
     }
@@ -118,6 +102,10 @@ public class UserService {
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
+    public List<Person> getClients() {
+        return userDao.getClients();
+    }
+
     private Person findUserByEmail(String email) {
         return userDao.getUserByEmail(email);
     }
@@ -135,5 +123,15 @@ public class UserService {
     private void encryptPassword(Person client) throws Exception {
         String encryptedPwd = PasswordUtil.encrypt(client.getPassword());
         client.setPassword(encryptedPwd);
+    }
+
+    private boolean isClientNewEmailUnique(Person client) {
+        Person person = userDao.getClientByEmail(client.getEmail());
+        return person == null || Objects.equals(person.getId(), client.getId());
+    }
+
+    private boolean isClientNewPhoneUnique(Person client) {
+        Person person = userDao.getClientByPhoneNumber(client.getPhoneNumber());
+        return person == null || Objects.equals(person.getId(), client.getId());
     }
 }

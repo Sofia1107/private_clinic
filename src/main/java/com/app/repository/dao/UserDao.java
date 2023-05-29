@@ -183,6 +183,7 @@ public class UserDao extends DatabaseAccess {
             ps.setString(7, client.getRH()); // RH value
             ps.setString(8, client.getAllergy());
             ps.setString(9, "client");
+            ps.setInt(10, client.getId());
 
             return ps.executeUpdate();
 
