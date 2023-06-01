@@ -27,6 +27,19 @@
 
 <body>
 
+<div class="container-fluid">
+    <div class="row header">
+        <div class="col-12">
+            <img src="${contextPath}/resources/img/logo.jpg" alt="Логотип клініки" class="logo">
+            <div class="clinic-info">
+                <h1>MediClub</h1>
+                <p>Адреса: вул. Прикладна, 123</p>
+                <p>Телефон: +1234567890</p>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="container">
 
     <form method="POST" action="${contextPath}/client/appointment/create" class="form-custom">
